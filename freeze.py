@@ -33,12 +33,15 @@ def make_parents(filepath):
     """
     Create directories to allow the creation of a file
     """
+    to_create = []
     (directory, filename) = os.path.split(filepath)
     while not os.path.exists(directory):
-        os.mkdir(directory)
+        to_create.append(directory)
         (directory, _) = os.path.split(directory)
+    
+    for directory in to_create[::-1]:
+        os.mkdir(directory)
 
-#directory = "/home/mz/archive/files/"
     
 def load_db(sumfile):
     """
@@ -136,11 +139,11 @@ def replicate(src, dst):
 
     if is_dirty(srcdata):
         print("* Source filetree is dirty, please run an integrity check and review changes")
-        return
+        exit(1)
     
     if is_dirty(dstdata):
         print("* Destination filetree is dirty, please run an integrity check and review changes, this likly indicates damage to the backup")
-        return
+        exit(1)
 
     newdsthash = dstdata["db"]
 
@@ -179,9 +182,6 @@ def interactive_check(directory):
     changes = results["changes"]
     hashdb = results["db"]
 
-    # Show statistics
-    print(f"{len(additions)} Additions, {len(deletions)} Deletions, {len(changes)} Changes.")
-
     for (file, filehash) in additions:
         print("File added:")
         print("\t", file)
@@ -196,6 +196,9 @@ def interactive_check(directory):
         print("File DELETED:")
         print("\t", file)
         print("\t", hashdb[file])
+    
+    # Show statistics
+    print(f"{len(additions)} Additions, {len(deletions)} Deletions, {len(changes)} Changes.")
 
     print("* Please review changes, including checking if changed files are ok before commiting.")
     commit = input("Commit changes [y/n]? ")
