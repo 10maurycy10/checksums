@@ -131,9 +131,9 @@ def replicate(src, dst):
     """
     Intractive replication of clean file trees.
     """
-    print("Checking source ", src)
+    print("* Checking source", src)
     srcdata = check(src)
-    print("Checking destination ", dst)
+    print("* Checking destination", dst)
     dstdata = check(dst)
     
 
@@ -152,14 +152,14 @@ def replicate(src, dst):
         dsthash = dstdata["db"].get(srcfile)
         if dsthash:
             if dsthash != srchash:
-                print("File", srcfile, "changed in src filesystem, replicating.")
+                #print("File", srcfile, "changed in src filesystem, replicating.")
                 srcpath = os.path.join(src, srcfile)
                 dstpath = os.path.join(dst, srcfile)
                 print(dstpath, "->", srcpath)
                 shutil.copy2(srcpath, dstpath)
                 newdsthash[srcfile] = srchash
         else:
-            print("File", srcfile, "added in src filesystem, replicating.")
+            #print("File", srcfile, "added in src filesystem, replicating.")
             srcpath = os.path.join(src, srcfile)
             dstpath = os.path.join(dst, srcfile)
             print(dstpath, "->", srcpath)
@@ -243,7 +243,7 @@ if __name__ == "__main__":
         dst = sys.argv[3]
         replicate(src, dst)
     else:
-        print("Unrecognize subcommand ", sumcommand)
+        print("Unrecognize subcommand ", subcommand)
         usage()
         exit(1)
 
